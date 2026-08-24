@@ -279,6 +279,79 @@ Scope {
                                             }
                                         }
 
+                                        // NANDOROID-PATCH: com a status bar desativavel, essas 3 areas de
+                                        // clique (esquerda=notificacoes, meio=dashboard, direita=quicksettings)
+                                        // some junto. Viram botoes no dock pra nao perder o acesso.
+                                        DockButton {
+                                            id: notificationsButton
+                                            visible: Config.ready && (Config.options.dock.showNotifications ?? true)
+                                            pointingHandCursor: true
+                                            onClicked: GlobalStates.notificationCenterOpen = !GlobalStates.notificationCenterOpen
+                                            toggled: GlobalStates.notificationCenterOpen
+                                            dockTopInset: 6 * Appearance.effectiveScale; dockBottomInset: 6 * Appearance.effectiveScale
+                                            colBackgroundToggled: "transparent"
+                                            colBackgroundToggledHover: "transparent"
+                                            background: Item {
+                                                anchors.fill: parent
+                                                Rectangle { anchors.fill: parent; radius: Appearance.rounding.button; color: notificationsButton.baseColor; visible: !(Config.ready && Config.options.dock.monochromeIcons) }
+                                                MaterialShape { anchors.fill: parent; anchors.margins: 4 * Appearance.effectiveScale; visible: Config.ready && Config.options.dock.monochromeIcons; shapeString: Config.ready && Config.options.search ? Config.options.search.iconShape : "Circle"; color: notificationsButton.down ? Appearance.colors.colPrimary : Appearance.colors.colPrimaryContainer }
+                                            }
+                                            contentItem: Item {
+                                                anchors.fill: parent
+                                                scale: notificationsButton.down ? 0.92 : (notificationsButton.hovered ? 1.05 : 1.0)
+                                                Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
+                                                MaterialSymbol { id: notificationsIcon; anchors.centerIn: parent; text: Notifications.unread > 0 ? "notifications_active" : "notifications"; iconSize: (Config.ready && Config.options.dock.monochromeIcons ? 22 : 26) * Appearance.effectiveScale; color: notificationsButton.toggled ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer0; visible: !(Config.ready && Config.options.dock.monochromeIcons) }
+                                                ColorOverlay { anchors.fill: notificationsIcon; source: notificationsIcon; color: Appearance.colors.colOnPrimaryContainer; visible: Config.ready && Config.options.dock.monochromeIcons }
+                                                StyledBadge { visible: Notifications.unread > 0; anchors.top: parent.top; anchors.right: parent.right; anchors.topMargin: 2 * Appearance.effectiveScale; anchors.rightMargin: 2 * Appearance.effectiveScale; count: Notifications.unread }
+                                            }
+                                        }
+
+                                        DockButton {
+                                            id: dashboardButton
+                                            visible: Config.ready && (Config.options.dock.showDashboard ?? true)
+                                            pointingHandCursor: true
+                                            onClicked: GlobalStates.dashboardOpen = !GlobalStates.dashboardOpen
+                                            toggled: GlobalStates.dashboardOpen
+                                            dockTopInset: 6 * Appearance.effectiveScale; dockBottomInset: 6 * Appearance.effectiveScale
+                                            colBackgroundToggled: "transparent"
+                                            colBackgroundToggledHover: "transparent"
+                                            background: Item {
+                                                anchors.fill: parent
+                                                Rectangle { anchors.fill: parent; radius: Appearance.rounding.button; color: dashboardButton.baseColor; visible: !(Config.ready && Config.options.dock.monochromeIcons) }
+                                                MaterialShape { anchors.fill: parent; anchors.margins: 4 * Appearance.effectiveScale; visible: Config.ready && Config.options.dock.monochromeIcons; shapeString: Config.ready && Config.options.search ? Config.options.search.iconShape : "Circle"; color: dashboardButton.down ? Appearance.colors.colPrimary : Appearance.colors.colPrimaryContainer }
+                                            }
+                                            contentItem: Item {
+                                                anchors.fill: parent
+                                                scale: dashboardButton.down ? 0.92 : (dashboardButton.hovered ? 1.05 : 1.0)
+                                                Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
+                                                MaterialSymbol { id: dashboardIcon; anchors.centerIn: parent; text: "dashboard"; iconSize: (Config.ready && Config.options.dock.monochromeIcons ? 22 : 26) * Appearance.effectiveScale; color: dashboardButton.toggled ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer0; visible: !(Config.ready && Config.options.dock.monochromeIcons) }
+                                                ColorOverlay { anchors.fill: dashboardIcon; source: dashboardIcon; color: Appearance.colors.colOnPrimaryContainer; visible: Config.ready && Config.options.dock.monochromeIcons }
+                                            }
+                                        }
+
+                                        DockButton {
+                                            id: quickSettingsButton
+                                            visible: Config.ready && (Config.options.dock.showQuickSettings ?? true)
+                                            pointingHandCursor: true
+                                            onClicked: GlobalStates.quickSettingsOpen = !GlobalStates.quickSettingsOpen
+                                            toggled: GlobalStates.quickSettingsOpen
+                                            dockTopInset: 6 * Appearance.effectiveScale; dockBottomInset: 6 * Appearance.effectiveScale
+                                            colBackgroundToggled: "transparent"
+                                            colBackgroundToggledHover: "transparent"
+                                            background: Item {
+                                                anchors.fill: parent
+                                                Rectangle { anchors.fill: parent; radius: Appearance.rounding.button; color: quickSettingsButton.baseColor; visible: !(Config.ready && Config.options.dock.monochromeIcons) }
+                                                MaterialShape { anchors.fill: parent; anchors.margins: 4 * Appearance.effectiveScale; visible: Config.ready && Config.options.dock.monochromeIcons; shapeString: Config.ready && Config.options.search ? Config.options.search.iconShape : "Circle"; color: quickSettingsButton.down ? Appearance.colors.colPrimary : Appearance.colors.colPrimaryContainer }
+                                            }
+                                            contentItem: Item {
+                                                anchors.fill: parent
+                                                scale: quickSettingsButton.down ? 0.92 : (quickSettingsButton.hovered ? 1.05 : 1.0)
+                                                Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
+                                                MaterialSymbol { id: quickSettingsIcon; anchors.centerIn: parent; text: "tune"; iconSize: (Config.ready && Config.options.dock.monochromeIcons ? 22 : 26) * Appearance.effectiveScale; color: quickSettingsButton.toggled ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer0; visible: !(Config.ready && Config.options.dock.monochromeIcons) }
+                                                ColorOverlay { anchors.fill: quickSettingsIcon; source: quickSettingsIcon; color: Appearance.colors.colOnPrimaryContainer; visible: Config.ready && Config.options.dock.monochromeIcons }
+                                            }
+                                        }
+
                                         // NANDOROID-PATCH: cluster de status (clock/rede/bateria/tray)
                                         // portado da StatusBar pro dock, pra dar pra desativar a barra
                                         // de cima e manter esses indicadores num unico bar embaixo.

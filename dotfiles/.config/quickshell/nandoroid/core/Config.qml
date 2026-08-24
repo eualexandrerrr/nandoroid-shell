@@ -456,6 +456,9 @@ property JsonObject background: JsonObject {
                 property bool showNetwork: true
                 property bool showBattery: true
                 property bool showTray: true
+                property bool showNotifications: true
+                property bool showQuickSettings: true
+                property bool showDashboard: true
             }
 
             // --- Power Profile ---
