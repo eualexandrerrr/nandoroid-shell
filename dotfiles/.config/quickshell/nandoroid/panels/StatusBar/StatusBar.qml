@@ -18,7 +18,7 @@ Scope {
     id: root
 
     Variants {
-        model: Quickshell.screens
+        model: Quickshell.screens.filter(s => s.name !== "DP-2") // NANDOROID-PATCH: shell fora de DP-2
         delegate: PanelWindow {
             id: barWindow
             required property var modelData
@@ -31,7 +31,7 @@ Scope {
             // Hide entirely while locked: the lock screen has its own status bar,
             // and a transparent live-wallpaper backdrop would otherwise let this
             // bar show through during an overlay-layered session lock.
-            visible: !GlobalStates.screenLocked
+            visible: !GlobalStates.screenLocked && (!Config.ready || (Config.options.statusBar ? Config.options.statusBar.enable : true))
 
             Component.onCompleted: GlobalFocusGrab.addPersistent(barWindow)
             Component.onDestruction: GlobalFocusGrab.removePersistent(barWindow)

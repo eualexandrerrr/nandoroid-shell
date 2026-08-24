@@ -386,6 +386,7 @@ property JsonObject background: JsonObject {
 
             // --- Status Bar ---
             property JsonObject statusBar: JsonObject {
+                property bool enable: true
                 property string moduleStyle: "base"
                 property real height: 40
                 property string layoutStyle: "standard" 
@@ -451,6 +452,10 @@ property JsonObject background: JsonObject {
                 property real scale: 1.0
                 property bool showLauncher: true
                 property bool showOverview: true
+                property bool showClock: true
+                property bool showNetwork: true
+                property bool showBattery: true
+                property bool showTray: true
             }
 
             // --- Power Profile ---

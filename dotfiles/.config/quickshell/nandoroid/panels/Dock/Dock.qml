@@ -2,6 +2,7 @@ import "../../core"
 import "../../core/functions" as Functions
 import "../../services"
 import "../../widgets"
+import "../StatusBar"
 import QtQuick
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
@@ -18,7 +19,7 @@ Scope {
     property bool pinned: Config.ready ? (Config.options.dock.pinnedOnStartup ?? false) : false
 
     Variants {
-        model: Quickshell.screens
+        model: Quickshell.screens.filter(s => s.name !== "DP-2") // NANDOROID-PATCH: shell fora de DP-2
         delegate: Scope {
             id: screenScope
             required property var modelData
@@ -275,6 +276,55 @@ Scope {
                                                 Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                                                 MaterialSymbol { id: launcherIcon; anchors.centerIn: parent; text: "apps"; iconSize: (Config.ready && Config.options.dock.monochromeIcons ? 24 : 28) * Appearance.effectiveScale; color: launcherButton.toggled ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer0; visible: !(Config.ready && Config.options.dock.monochromeIcons) }
                                                 ColorOverlay { anchors.fill: launcherIcon; source: launcherIcon; color: Appearance.colors.colOnPrimaryContainer; visible: Config.ready && Config.options.dock.monochromeIcons }
+                                            }
+                                        }
+
+                                        // NANDOROID-PATCH: cluster de status (clock/rede/bateria/tray)
+                                        // portado da StatusBar pro dock, pra dar pra desativar a barra
+                                        // de cima e manter esses indicadores num unico bar embaixo.
+                                        DockSeparator {
+                                            visible: Config.ready && (
+                                                (Config.options.dock.showClock ?? true) ||
+                                                (Config.options.dock.showNetwork ?? true) ||
+                                                ((Config.options.dock.showBattery ?? true) && Battery.available) ||
+                                                (Config.options.dock.showTray ?? true)
+                                            )
+                                            Layout.topMargin: 12 * Appearance.effectiveScale
+                                            Layout.bottomMargin: 12 * Appearance.effectiveScale
+                                        }
+
+                                        RowLayout {
+                                            id: dockStatusCluster
+                                            Layout.alignment: Qt.AlignVCenter
+                                            spacing: 12 * Appearance.effectiveScale
+
+                                            StyledText {
+                                                visible: Config.ready && (Config.options.dock.showClock ?? true)
+                                                text: DateTime.currentTime
+                                                font.pixelSize: Appearance.font.pixelSize.small
+                                                font.weight: Font.Medium
+                                                color: Appearance.colors.colOnLayer0
+                                                Layout.alignment: Qt.AlignVCenter
+                                            }
+
+                                            NetworkIcon {
+                                                visible: Config.ready && (Config.options.dock.showNetwork ?? true)
+                                                overrideBackground: Network.materialSymbolBackground
+                                                overrideForeground: Network.materialSymbol
+                                                iconSize: 18 * Appearance.effectiveScale
+                                                color: Appearance.colors.colOnLayer0
+                                                Layout.alignment: Qt.AlignVCenter
+                                            }
+
+                                            BatteryIndicator {
+                                                visible: Config.ready && Battery.available && (Config.options.dock.showBattery ?? true)
+                                                color: Appearance.colors.colOnLayer0
+                                                Layout.alignment: Qt.AlignVCenter
+                                            }
+
+                                            StatusBarTray {
+                                                visible: Config.ready && (Config.options.dock.showTray ?? true)
+                                                Layout.alignment: Qt.AlignVCenter
                                             }
                                         }
                                     }
